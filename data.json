@@ -1,0 +1,10 @@
+{
+  "rightArrowLabel": "Most Happy",
+  "leftArrowLabel": "Least Happy",
+  "numBoxes": {
+    "elt": {},
+    "_events": {},
+    "width": 170,
+    "height": 21
+  }
+}
