@@ -1,3 +1,11 @@
+//data = require('./data.json');
+
+dataBoxes = 49;
+dataRLabel = "Most Happy";
+dataLLabel = "Least Happy";
+
+
+
 class QBox {
   constructor(bX, bY, bPos, bColor,filled) {
     this.x = bX;
@@ -16,7 +24,9 @@ class QBox {
       fill(0,255,0);
       //stroke(255,0,0);
       //imgScale = 80;
-      text(this.pos,500,200);
+      text( this.pos,1200,200);
+      //text(mouseX,1200,300);
+      //text(mouseY,1200,400);
     }
     rectMode(CENTER);
     //fill(255);
@@ -32,7 +42,13 @@ class QBox {
       mouseY > this.y - 50 &&
       mouseY < this.y + 50
     ) {
+      
+
       this.rollover = true;
+
+      if(this.filled){
+        this.rollover = false;
+      }
       //console.log("Mouse Pressed");
       return true;
     }else{
@@ -48,19 +64,114 @@ class QBox {
 }
 
 class QImg{
-  constructor(imgFile,imgX,imgY,imgPos){
+  constructor(imgFile,imgX,imgY,imgPos,picNum){
     this.imgFile = imgFile;
     this.imgX = imgX;
     this.imgY = imgY;
     this.pos = imgPos;
+    this.picNum = picNum;
+    this.selected = false;
 
   }
 
   show(){
-    
+
+    if(this.selected){
+      fill('red');
+      noStroke();
+      rect(this.imgX + 40,this.imgY + 40,100,100);
+
+    }else{
+      noFill();
+
+    }
+   
     image(this.imgFile,this.imgX,this.imgY,80,80);
+    stroke('black');
+    strokeWeight(1);
+    
+    //text(this.imgX,this.imgX,this.imgY + 20);
+    //text(this.imgY,this.imgX + 20,this.imgY + 20);
+    //text(this.selected,this.imgX + 20 , this.imgY + 20);
+
   }
 
+  clicked(){
+    if(
+      mouseX > this.imgX &&
+      mouseX < this.imgX + 80 &&
+      mouseY > this.imgY &&
+      mouseY < this.imgY + 80
+    ){
+        this.selected = !this.selected;
+
+        if(this.selected){
+          selectedCount+=1;
+          swapArray.push(this.picNum);
+          
+        }else {
+          selectedCount-=1;
+          for (let i = 0; i < swapArray.length; i++) {
+            if(swapArray[i] === this.picNum){
+              swapArray.splice(i,1);
+            }
+            
+          }
+        
+        }
+
+        if(selectedCount == 2){
+          for (let i = 0; i < qImgArr.length; i++) {
+            if(qImgArr[i].picNum == swapArray[0] &&
+              qImgArr[i].picNum != this.picNum
+              ){
+
+                hold.imgX = qImgArr[i].imgX;
+                hold.imgY = qImgArr[i].imgY;
+                hold.pos = qImgArr[i].pos;
+
+                qImgArr[i].imgX = this.imgX;
+                qImgArr[i].imgY = this.imgY;
+                qImgArr[i].pos = this.pos;
+
+                this.imgX = hold.imgX;
+                this.imgY = hold.imgY;
+                this.pos = hold.pos;
+                
+                //these are all working
+                qImgArr[i].selected = false;
+                this.selected = false;
+                swapArray = [];
+                selectedCount = 0;
+              
+
+            }
+            
+          }
+
+        }
+
+        /* if(selectedCount == 3){
+
+            selectedCount-=1;
+            for (let i = 0; i < qImgArr.length; i++) {
+              if(qImgArr[i].picNum == swapArray[0]){
+                qImgArr[i].selected = false;
+              }
+              
+            }
+            swapArray.splice(0,1);
+            
+            
+          
+        } */
+
+       
+        
+
+    }
+    
+  }
   
 
 
@@ -79,6 +190,12 @@ var overBox = false;
 var locked = false;
 var xOffset = 0.0;
 var yOffset = 0.0;
+
+
+//study-specific variable
+var dataBoxes;
+var dataRLabel;
+var dataLLabel;
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -126,7 +243,16 @@ function imgLoaded(){
 }
 
 
+
+
 function preload() {
+
+//data = require('./studies/data.json')
+//var data = loadJSON('data.json', gotData(), failData());
+
+/*dataBoxes = data.numBoxes;
+dataRLabel = data.rightLabel;
+dataLLabel = data.leftLabel;*/
 
 
 img = loadImage("assets/" + picOrder[0].toString() + ".jpg");
@@ -140,22 +266,18 @@ img = loadImage("assets/" + picOrder[0].toString() + ".jpg");
 arrRightImg = loadImage("arrows/arrowright.png");
 arrLeftImg = loadImage("arrows/arrowleft.png");
 
-data = loadJSON('studies/data.json');
+//data = loadJSON('./studies/data.json');
 
-//dataBoxes = data.numBoxes;
-//dataRLabel = data.rightArrowLabel.toString();
-//dataLLabel = data.leftArrowLabel.toString();
-  
 }
 
 img = imgSet[0];
 
 //var img = imgSet[0];
 
-var boxes = 36;
+/* var boxes = 36;
 var dataRLabel = "Most Happy"
 var dataLLabel = "Least Happy";
-
+ */
 var rowBoxes = [1, 3, 5, 7, 9, 11, 13, 15, 17];
 var rowTot = [1, 4, 9, 16, 25, 36, 49, 64, 81];
 
@@ -312,27 +434,41 @@ function setup() {
   textSize(2.5*logoBoxSize);
   text("Q",xPosLogo - 10,yPosLogo + logoBoxSize); */
 
-  initQSort(boxes);
+  initQSort(dataBoxes);
   shrinkButton = createButton('Shrink Main Image');
   shrinkButton.size(100);
-  shrinkButton.position(50,750);
-   shrinkButton.mousePressed(shrinkImage); 
+  shrinkButton.position(1200,10);
+  shrinkButton.mousePressed(shrinkImage); 
 
   enlargeButton = createButton('Enlarge Main Image');
   enlargeButton.size(100);
-  enlargeButton.position(50,800);
+  enlargeButton.position(1200,60);
   enlargeButton.mousePressed(enlargeImage);
 
   placeButton = createButton('Place Main Image');
   placeButton.size(100);
-  placeButton.position(175,750);
+  placeButton.position(1350,10);
   placeButton.mousePressed(placeImage); 
+
+  finishButton = createButton('Finish Sort');
+  finishButton.size(100);
+  finishButton.position(1350,60);
+  finishButton.mousePressed(finished());
+
+  swapButton = createButton('Save Data as CSV');
+  swapButton.size(100);
+  swapButton.position(1350, 110);
+  swapButton.mousePressed(swapPhotos());
 
 
 
 }
 
 var imgScale = 320;
+
+function finished(){
+  createA('https://www.google.com','Go here')
+}
 
 function shrinkImage(){
   imgScale = 80;
@@ -360,11 +496,14 @@ function placeImage(){
   for (let i = 0; i < Qboxes.length; i++) {
     if (Qboxes[i].rollover){
       //there should only be one
-      append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos))
+      append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,picOrder[m]))
       Qboxes[i].filled = true;
       m+=1;
       bx  = 100
       by  = 50;
+      imgScale = 320;
+      boxSize = 320;
+      Qboxes[i].rollover = false;
     }
   }
   //reset everything to next image
@@ -375,8 +514,73 @@ function placeImage(){
   
 }
 
+
+
+var selectedCount = 0;
+var swapArray = []
+var hold = {
+  imgX: 0,
+  imgY: 0,
+  pos: 0
+}
+
+imageSwapped = false;
+
+ function swapPhotos(){
+if(selectedCount === 2){
+  imageSwapped = true;
+  
+  for (let i = 0; index < qImgArr.length; index++) {
+    if(qImgArr[i].picNum == swapArray[0]){
+      for (let l = 0; l < qImgArr.length; l++) {
+        if(qImgArr[l].picNum == swapArray[1]){
+         // text("Images Being Swapped",1200,350);
+
+
+          /* hold.imgX = qImgArr[i].imgX;
+          hold.imgY = qImgArr[i].imgY;
+          hold.pos = qImgArr[i].pos; */
+
+        /* [qImgArr[i].imgX, qImgArr[l].imgX] = [qImgArr[l].imgX, qImgArr[i].imgX];
+        [qImgArr[i].imgY, qImgArr[l].imgY] = [qImgArr[l].imgY, qImgArr[i].imgY];
+        [qImgArr[i].pos, qImgArr[l].pos] = [qImgArr[l].pos, qImgArr[i].pos];
+ */
+
+          /* qImgArr[i].imgX = qImgArr[l].imgX;
+          qImgArr[i].imgY = qImgArr[l].imgY;
+          qImgArr[i].pos = qImgArr[l].pos; */
+          //qImgArr[i].selected = false;
+          
+         /*  qImgArr[l].imgX = hold.imgX;
+          qImgArr[l].imgY = hold.imgY;
+          qImgArr[l].pos = hold.pos */;
+         // qImgArr[l].selected = false;
+
+         /*  selectedCount = 0;
+          swapArray = []; */
+
+
+        }
+        
+      }
+    }
+    
+  }
+
+
+}  
+
+} 
+
+
+
+
 function mousePressed() {
   
+  for (let i = 0; i < qImgArr.length; i++) {
+    qImgArr[i].clicked();
+    
+  } 
   
 
 
@@ -430,6 +634,8 @@ function mouseReleased() {
 
 function draw() {
 
+  
+
   /* shrinkButton.mousePressed(shrinkImage);
   enlargeButton.mousePressed(enlargeImage); */
  /*  for (let i = 0; i < Qboxes.length; i++) {
@@ -449,6 +655,8 @@ function draw() {
   for (let i = 0; i < qImgArr.length; i++) {
     qImgArr[i].show(); 
   }
+
+  noTint();
 
   //display the indicator numbers
   for (let t = 0; t < rowPositions[rowIndex].length; t++) {
@@ -490,7 +698,7 @@ function draw() {
         100 * (rowIndex + -1) +
         windowWidth -
         400,
-        300 + rowIndex * 100,
+        220 + rowIndex * 100,
   100, 100);
 
   image(arrLeftImg,
@@ -498,7 +706,7 @@ function draw() {
         100 * (rowIndex + -1) +
         windowWidth -
         200,
-        300 + rowIndex * 100,
+        220 + rowIndex * 100,
          100, 100);
 
   text(dataRLabel,
@@ -506,7 +714,7 @@ function draw() {
         100 * (rowIndex + -1) +
         windowWidth -
         400,
-        300 + rowIndex * 100
+        220 + rowIndex * 100
   );
 
   text(dataLLabel,
@@ -514,7 +722,20 @@ function draw() {
         100 * (rowIndex + -1) +
         windowWidth -
         200,
-        300 + rowIndex * 100);
+        220 + rowIndex * 100);
+        
+  
+text(selectedCount,1200,150);
+text(swapArray[0],1200,250);
+text(swapArray[1],1200,300);
+
+if(imageSwapped){
+  text("Images Being Swapped",1200,350);
+}
+
+
+
+  
 
 
 
