@@ -1,5 +1,7 @@
 {
-  "rightLabel": "Least Happy",
-  "leftLabel": "Most Happy",
-  "numBoxes": 36
+  "start": "Start Text",
+  "finish": "Finish Text",
+  "right": "Right Arrow Label",
+  "left": "Left Arrow Label",
+  "boxes": "49"
 }

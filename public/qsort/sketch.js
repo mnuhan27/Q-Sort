@@ -1,8 +1,10 @@
 //data = require('./data.json');
 
 dataBoxes = 49;
-dataRLabel = "Most Happy";
-dataLLabel = "Least Happy";
+//dataRLabel = "Most Happy";
+//dataLLabel = "Least Happy";
+
+let data;
 
 
 
@@ -143,6 +145,11 @@ class QImg{
                 this.selected = false;
                 swapArray = [];
                 selectedCount = 0;
+
+                /* newRow('Photo ' + qImgArr[i].picNum.toString(),qImgArr[i].pos);
+                newRow('Photo ' + this.picNum.toString(),this.pos); */
+
+
               
 
             }
@@ -194,8 +201,8 @@ var yOffset = 0.0;
 
 //study-specific variable
 var dataBoxes;
-var dataRLabel;
-var dataLLabel;
+//var dataRLabel;
+//var dataLLabel;
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -243,7 +250,7 @@ function imgLoaded(){
 }
 
 
-
+var table;
 
 function preload() {
 
@@ -255,18 +262,28 @@ dataRLabel = data.rightLabel;
 dataLLabel = data.leftLabel;*/
 
 
-img = loadImage("assets/" + picOrder[0].toString() + ".jpg");
+img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
 
  for (let i = 0; i < picOrder.length; i++) {
-  imgItem = loadImage("assets/" + picOrder[i].toString() + ".jpg" );
+  imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
   imgSet.push(imgItem);
 } 
   //console.log(imgLoadedArr)
 
-arrRightImg = loadImage("arrows/arrowright.png");
-arrLeftImg = loadImage("arrows/arrowleft.png");
+  data = loadJSON('../data.json');
+  dataRLabel = data.right;
+  dataLLabel = data.left;
+
+arrRightImg = loadImage("../arrows/arrowright.png");
+arrLeftImg = loadImage("../arrows/arrowleft.png");
 
 //data = loadJSON('./studies/data.json');
+
+table = new p5.Table();
+
+ for (let i = 1; i <= dataBoxes; i++) {
+    table.addColumn('Photo ' + [i].toString());
+}
 
 }
 
@@ -434,7 +451,7 @@ function setup() {
   textSize(2.5*logoBoxSize);
   text("Q",xPosLogo - 10,yPosLogo + logoBoxSize); */
 
-  initQSort(dataBoxes);
+  initQSort(data.boxes);
   shrinkButton = createButton('Shrink Main Image');
   shrinkButton.size(100);
   shrinkButton.position(1200,10);
@@ -453,12 +470,12 @@ function setup() {
   finishButton = createButton('Finish Sort');
   finishButton.size(100);
   finishButton.position(1350,60);
-  finishButton.mousePressed(finished());
+  finishButton.mousePressed(finished);
 
-  swapButton = createButton('Save Data as CSV');
-  swapButton.size(100);
-  swapButton.position(1350, 110);
-  swapButton.mousePressed(swapPhotos());
+  saveButton = createButton('Save Data as CSV');
+  saveButton.size(100);
+  saveButton.position(1350, 110);
+  saveButton.mousePressed(saveCSV);
 
 
 
@@ -467,7 +484,7 @@ function setup() {
 var imgScale = 320;
 
 function finished(){
-  createA('https://www.google.com','Go here')
+  window.open('localhost:8000/finish');
 }
 
 function shrinkImage(){
@@ -497,7 +514,10 @@ function placeImage(){
     if (Qboxes[i].rollover){
       //there should only be one
       append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,picOrder[m]))
+      
+
       Qboxes[i].filled = true;
+      // newRow('Photo ' + picOrder[m].toString(),Qboxes[i].pos);
       m+=1;
       bx  = 100
       by  = 50;
@@ -572,6 +592,21 @@ if(selectedCount === 2){
 
 } 
 
+let newRow = table.addRow();
+
+function saveCSV(){
+
+  /* for (let i = 0; i < qImgArr.length; i++) {
+    //newRow('Photo ' + qImgArr[i].picNum.toString(),qImgArr[i].pos);
+    
+  } */
+
+
+  saveTable(table, 'data.csv')
+
+  
+
+}
 
 
 
@@ -709,7 +744,7 @@ function draw() {
         220 + rowIndex * 100,
          100, 100);
 
-  text(dataRLabel,
+  text(data.left,
   100 * rowPositions[rowIndex][rowPositions[rowIndex].length - 1] -
         100 * (rowIndex + -1) +
         windowWidth -
@@ -717,7 +752,7 @@ function draw() {
         220 + rowIndex * 100
   );
 
-  text(dataLLabel,
+  text(data.right,
   100 * rowPositions[rowIndex][0] -
         100 * (rowIndex + -1) +
         windowWidth -
