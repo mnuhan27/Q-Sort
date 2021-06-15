@@ -13,6 +13,9 @@ function setup() {
     boxes.option(36);
     boxes.option(49);
     boxes.option(64);
+    presort = createSelect('Pre-Sort Enabled?');
+    presort.option(true);
+    presort.option(false);
     //boxes.selected(64);
     //boxes.changed(mySelectEvent);
     createDiv();
@@ -31,6 +34,7 @@ function saveData(){
     data.right = right.value();
     data.left = left.value();
     data.boxes = boxes.value();
+    data.presort = presort.value();
 	
 	saveJSON(data, 'data.json');
 }

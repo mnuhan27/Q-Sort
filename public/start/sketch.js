@@ -26,6 +26,14 @@ function draw() {
 
 
 function start(){
-  window.open("localhost:8000/qsort")
+
+  if(data.presort){
+
+    window.location.replace("../presort")
+  }else{
+    window.location.replace("../qsort")
+
+  }
+  
   
 }

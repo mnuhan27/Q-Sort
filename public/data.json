@@ -1,7 +1,7 @@
 {
-  "start": "Start Text",
-  "finish": "Finish Text",
+  "start": "Thank you for choosing to particpate",
+  "finish": "Thank you for conducting the survey. Please wait for researcher",
   "right": "Right Arrow Label",
   "left": "Left Arrow Label",
-  "boxes": "49"
+  "boxes": "36"
 }

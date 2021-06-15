@@ -112,6 +112,7 @@ class QImg{
           swapArray.push(this.picNum);
           
         }else {
+          //swapping imaging
           selectedCount-=1;
           for (let i = 0; i < swapArray.length; i++) {
             if(swapArray[i] === this.picNum){
@@ -279,11 +280,10 @@ arrLeftImg = loadImage("../arrows/arrowleft.png");
 
 //data = loadJSON('./studies/data.json');
 
+//this is running
 table = new p5.Table();
 
- for (let i = 1; i <= dataBoxes; i++) {
-    table.addColumn('Photo ' + [i].toString());
-}
+
 
 }
 
@@ -440,6 +440,11 @@ var yPosLogo = 150;
 var logoBoxSize = 50;
 
 function setup() {
+   for (let i = 0; i <= data.boxes; i++) {
+    table.addColumn('Photo ' + i);
+}
+
+
   createCanvas(windowWidth, windowHeight);
   bx = 100;
   by = 50;
