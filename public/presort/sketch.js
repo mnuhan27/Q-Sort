@@ -12,6 +12,9 @@ class QBox {
   drawBox() {
     fill(255);
     stroke("black",0,0);
+    
+
+
     if (this.rollover) {
       fill(0,255,0);
       //stroke(255,0,0);
@@ -23,7 +26,24 @@ class QBox {
     rectMode(CENTER);
     //fill(255);
     //stroke(this.color, 0, 0);
+    fill(255);
     rect(this.x, this.y, 500, 200);
+
+    if(this.pos == 1){
+      textSize(30);
+      fill(0);
+      text("Least Agree",this.x - 50,this.y);
+
+    }else if (this.pos == 2){
+      textSize(30);
+      fill(0);
+      text("No Preference",this.x - 50,this.y);
+    }else{
+      textSize(30);
+      fill(0);
+      text("Most Agree",this.x -50,this.y);
+
+    }
   }
 
   mouseIsOver() {
@@ -60,8 +80,6 @@ class QBox {
 class QImg{
   constructor(imgFile,imgPos,picNum){
     this.imgFile = imgFile;
-    this.imgX = imgX;
-    this.imgY = imgY;
     this.pos = imgPos;
     this.picNum = picNum;
     
@@ -150,13 +168,6 @@ function mouseDragged(){
 
 function mousePressed() {
   
-  for (let i = 0; i < qImgArr.length; i++) {
-    qImgArr[i].clicked();
-    
-  } 
-  
-
-
   if (overBox) {
     locked = true;
     //fill(255, 255, 255);
@@ -205,15 +216,35 @@ function mouseReleased() {
 
 }
 
+
+let loadData = function(callback){
+
+  data = loadJSON('../data.json');
+  callback();
+}
+
+let loadPics = function(){
+ 
+  for (let i = 0; i < picOrder.length; i++) {
+  imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
+  imgSet.push(imgItem);
+} 
+
+}
+
 function preload(){
 
- for (let i = 0; i < picOrder.length; i++) {
+  loadData(loadPics);
+
+ 
+
+/*  for (let i = 0; i < picOrder.length; i++) {
   imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
   imgSet.push(imgItem);
 } 
   //console.log(imgLoadedArr)
 
-  data = loadJSON('../data.json');
+  data = loadJSON('../data.json'); */
   
 
 //data = loadJSON('./studies/data.json');
@@ -271,7 +302,34 @@ function setup() {
 var imgScale = 320;
 
 function finished(){
+
+  let presortData = {
+    least: [],
+    middle: [],
+    most: []
+
+  }
+
+  for(let i = 0; i++; i , qImgArr.length){
+
+    if(qImgArr[i].pos == 1){
+      append(presortData.least,qImgArr[i].picNum);
+    
+    }else if(qImgArr[i] == 2){
+      append(presortData.middle,qImgArr[i].picNum);
+    }else{
+      append(presortData.most,qImgArr[i].picNum);
+    }
+
+  }
+
+  saveJSON(presortData,'presortData.json');
+
+
+  
+  if(qImgArr.length == data.boxes){
   window.location.replace('../qsort');
+  }
 }
 
 function shrinkImage(){
@@ -300,7 +358,7 @@ function placeImage(){
   for (let i = 0; i < Qboxes.length; i++) {
     if (Qboxes[i].rollover){
       //there should only be one
-      append(qImgArr, new QImg(imgSet[m],Qboxes[i].pos,picOrder[m]))
+      qImgArr.push(new QImg(imgSet[m],Qboxes[i].pos,picOrder[m]));
       
 
       // newRow('Photo ' + picOrder[m].toString(),Qboxes[i].pos);
@@ -347,4 +405,5 @@ function draw() {
   rectMode(RADIUS);
   fill(125);
   image(imgSet[m], bx, by, imgScale, imgScale);
+  
 }

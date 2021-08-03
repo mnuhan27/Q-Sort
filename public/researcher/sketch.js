@@ -13,9 +13,14 @@ function setup() {
     boxes.option(36);
     boxes.option(49);
     boxes.option(64);
-    presort = createSelect('Pre-Sort Enabled?');
-    presort.option(true);
-    presort.option(false);
+
+    presortoption = createSelect();
+    presortoption.option("Enable Pre-Sort");
+    presortoption.option("Disable Pre-Sort");
+
+    presortFolder = createInput("Enter the Pre-Sort Folder Name");
+    qsortFolder = createInput("Enter the Q-Sort Folder Name");
+
     //boxes.selected(64);
     //boxes.changed(mySelectEvent);
     createDiv();
@@ -34,7 +39,15 @@ function saveData(){
     data.right = right.value();
     data.left = left.value();
     data.boxes = boxes.value();
-    data.presort = presort.value();
+    if(presortoption.value() == "Enable Pre-Sort"){
+      data.presort = true;
+    }else{
+
+      data.presort = false;
+    }
+
+    data.presortFolder = presortFolder.value();
+    data.qsortFolder = qsortFolder.value();
 	
 	saveJSON(data, 'data.json');
 }
