@@ -10,7 +10,7 @@ function setup() {
   createP(data.start)
   startButton = createButton('Start the Sort');
   startButton.size(200);
-  startButton.position(width/2,200);
+  startButton.position(width/2,800);
   startButton.mousePressed(start);
   
 }

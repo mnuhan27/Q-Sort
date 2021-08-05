@@ -18,6 +18,13 @@ function setup() {
     presortoption.option("Enable Pre-Sort");
     presortoption.option("Disable Pre-Sort");
 
+    if(presortoption.value() == "Enable Pre-Sort"){
+    exparm = createSelect();
+    exparm.option("Experimental Arm 1");
+    exparm.option("Experimental Arm 2");
+    }
+
+    
     presortFolder = createInput("Enter the Pre-Sort Folder Name");
     qsortFolder = createInput("Enter the Q-Sort Folder Name");
 
@@ -44,6 +51,13 @@ function saveData(){
     }else{
 
       data.presort = false;
+    }
+
+    if(exparm.value() == "Experimental Arm 1"){
+      data.exparm = 1;
+    }else{
+      data.exparm = 2;
+
     }
 
     data.presortFolder = presortFolder.value();

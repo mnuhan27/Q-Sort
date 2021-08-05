@@ -32,12 +32,12 @@ class QBox {
     if(this.pos == 1){
       textSize(30);
       fill(0);
-      text("Least Agree",this.x - 50,this.y);
+      text("Disgree",this.x - 50,this.y);
 
     }else if (this.pos == 2){
       textSize(30);
       fill(0);
-      text("No Preference",this.x - 50,this.y);
+      text("Unsure",this.x - 50,this.y);
     }else{
       textSize(30);
       fill(0);
@@ -112,8 +112,8 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-var picNum = getRandomInt(1, 45).toString();
-var picName = picNum + ".jpg";
+//var picNum = getRandomInt(1, 45).toString();
+//var picName = picNum + ".jpg";
 
 function shuffleNum(arra1) {
     var ctr = arra1.length, temp, index;
@@ -133,7 +133,7 @@ function shuffleNum(arra1) {
 }
 
 var numPicsArray = [];
-var numPics = 36;
+var numPics = 0;
 
 for (let i = 1; i <= numPics; i++) {
     numPicsArray.push(i);
@@ -141,7 +141,7 @@ for (let i = 1; i <= numPics; i++) {
 }
 //picOrder is an array with the random order of pictures
 picOrder = shuffleNum(numPicsArray);
-console.log(picOrder);
+//console.log(picOrder);
 
 imgSet = []
 
@@ -220,13 +220,23 @@ function mouseReleased() {
 let loadData = function(callback){
 
   data = loadJSON('../data.json');
+  
   callback();
 }
 
 let loadPics = function(){
+
+  //numPics = data.boxes;
+ 
+  for (let i = 1; i <= 25; i++) {
+    numPicsArray.push(i);
+
+}
+
+picOrder = shuffleNum(numPicsArray);
  
   for (let i = 0; i < picOrder.length; i++) {
-  imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
+  imgItem = loadImage("../exparm1/" + picOrder[i].toString() + ".jpg" );
   imgSet.push(imgItem);
 } 
 
@@ -234,7 +244,11 @@ let loadPics = function(){
 
 function preload(){
 
-  loadData(loadPics);
+  //loadData(loadPics);
+
+  data = loadJSON('../data.json');
+
+  loadPics();
 
  
 
@@ -301,8 +315,6 @@ function setup() {
 
 var imgScale = 320;
 
-function finished(){
-
   let presortData = {
     least: [],
     middle: [],
@@ -310,24 +322,15 @@ function finished(){
 
   }
 
-  for(let i = 0; i++; i , qImgArr.length){
+function finished(){
 
-    if(qImgArr[i].pos == 1){
-      append(presortData.least,qImgArr[i].picNum);
-    
-    }else if(qImgArr[i] == 2){
-      append(presortData.middle,qImgArr[i].picNum);
-    }else{
-      append(presortData.most,qImgArr[i].picNum);
-    }
 
-  }
 
   saveJSON(presortData,'presortData.json');
 
 
   
-  if(qImgArr.length == data.boxes){
+  if(qImgArr.length >= data.boxes){
   window.location.replace('../qsort');
   }
 }
@@ -359,6 +362,25 @@ function placeImage(){
     if (Qboxes[i].rollover){
       //there should only be one
       qImgArr.push(new QImg(imgSet[m],Qboxes[i].pos,picOrder[m]));
+
+      if(Qboxes[i].pos == 1){
+        append(presortData.least,picOrder[m]);
+      }else if(Qboxes[i].pos == 2){
+        append(presortData.middle,picOrder[m]);
+      }else if(Qboxes[i].pos == 3){
+        append(presortData.most,picOrder[m]);
+      }
+
+
+    /*   if(qImgArr[i].pos == 1){
+        append(presortData.least,qImgArr[i].picNum);
+      }else if(qImgArr[i] == 2){
+      append(presortData.middle,qImgArr[i].picNum);
+    else{
+      append(presortData.most,qImgArr[i].picNum);
+    } */
+
+  
       
 
       // newRow('Photo ' + picOrder[m].toString(),Qboxes[i].pos);
@@ -405,5 +427,7 @@ function draw() {
   rectMode(RADIUS);
   fill(125);
   image(imgSet[m], bx, by, imgScale, imgScale);
+
+  //console.log(qImgArr);
   
 }

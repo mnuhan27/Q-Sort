@@ -136,10 +136,13 @@ class QImg{
                 qImgArr[i].imgX = this.imgX;
                 qImgArr[i].imgY = this.imgY;
                 qImgArr[i].pos = this.pos;
+                //table.addRow().setNum('Photo ' + picOrder[m],Qboxes[i].pos);
+                table.addRow().setNum('Photo ' + qImgArr[i].picNum,this.pos);
 
                 this.imgX = hold.imgX;
                 this.imgY = hold.imgY;
                 this.pos = hold.pos;
+                table.addRow().setNum('Photo ' + this.picNum,hold.pos);
                 
                 //these are all working
                 qImgArr[i].selected = false;
@@ -232,9 +235,9 @@ function shuffleNum(arra1) {
 }
 
 var numPicsArray = [];
-var numPics = 36;
+//var numPics = 36;
 
-for (let i = 1; i <= numPics; i++) {
+for (let i = 1; i <= 25; i++) {
     numPicsArray.push(i);
 
 }
@@ -243,6 +246,8 @@ picOrder = shuffleNum(numPicsArray);
 console.log(picOrder);
 
 imgSet = []
+psset = [[],[],[]]
+pssetOrder = [[],[],[]];
 
 imgLoadedArr = []
 
@@ -252,6 +257,9 @@ function imgLoaded(){
 
 
 var table;
+
+var presortMarker = ["Most Agree","Disagree","Unsure"]
+var psMarkerPosition = 2;
 
 function preload() {
 
@@ -263,25 +271,75 @@ dataRLabel = data.rightLabel;
 dataLLabel = data.leftLabel;*/
 
 
-img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
 
- for (let i = 0; i < picOrder.length; i++) {
-  imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
-  imgSet.push(imgItem);
-} 
   //console.log(imgLoadedArr)
 
   data = loadJSON('../data.json');
   dataRLabel = data.right;
   dataLLabel = data.left;
+  presortData = loadJSON('../presortData.json');
 
+  if(data.presort == true){
+
+    if(data.exparm == 2){
+
+    //presortData = loadJSON('../presortData.json');
+
+    //img = loadImage("../assets/" + presortData.most[0].toString()+ ".jpg");
+
+    for (let i = 0; i < presortData.most.length; i++) {
+      imgItem = loadImage("../assets/" + presortData.most[i].toString() + ".jpg" );
+      console.log("../assets/" + presortData.most[i].toString() + ".jpg" );
+      psset[0].push(imgItem);
+      pssetOrder[0].push(presortData.most[i]);
+      
+      
+    }
+
+    for (let i = 0; i < presort.least.length; i++) {
+      imgItem = loadImage("../assets/" + presortData.least[i].toString() + ".jpg" );
+      psset[1].push(imgItem);
+    }
+
+    for (let i = 0; i < presort.middle.length; i++) {
+      imgItem = loadImage("../assets/" + presortData.middle[i].toString() + ".jpg" );
+      psset[2].push(imgItem);
+    }
+   
+
+
+    fill(0);
+    text(presortMarker[psMarkerPosition],450,400);
+
+    }
+
+  }else{
+
+  img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
+
+ for (let i = 0; i < picOrder.length; i++) {
+  imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
+  imgSet.push(imgItem);
+} 
+
+  }
+
+/* img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
+
+ for (let i = 0; i < picOrder.length; i++) {
+  imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
+  imgSet.push(imgItem);
+} 
+ */
 arrRightImg = loadImage("../arrows/arrowright.png");
 arrLeftImg = loadImage("../arrows/arrowleft.png");
 
 //data = loadJSON('./studies/data.json');
 
 //this is running
-table = new p5.Table();
+table = loadTable('../data/data.csv', 'csv', 'header');
+
+let newRow = table.addRow();
 
 
 
@@ -346,7 +404,7 @@ function initQSort(totalBoxes) {
         remIndex = i;
       } else if (rowTot[i] >= remBoxes && remBoxes % 2 == 0) {
         remIndex = i - 1;
-        console.log(remIndex);
+        //console.log(remIndex);
         remEven = true;
 
         break;
@@ -428,7 +486,7 @@ function initQSort(totalBoxes) {
   }
 }
 
-console.log(Qboxes);
+//console.log(Qboxes);
 
 //intial image positions
 let imageX = 100;
@@ -440,9 +498,9 @@ var yPosLogo = 150;
 var logoBoxSize = 50;
 
 function setup() {
-   for (let i = 0; i <= data.boxes; i++) {
-    table.addColumn('Photo ' + i);
-}
+   /* for (let i = 0; i <= data.boxes; i++) {
+    table.addColumn('Photo ' + i); */
+
 
 
   createCanvas(windowWidth, windowHeight);
@@ -455,6 +513,8 @@ function setup() {
   rect(xPosLogo + logoBoxSize,yPosLogo - logoBoxSize,logoBoxSize,logoBoxSize);
   textSize(2.5*logoBoxSize);
   text("Q",xPosLogo - 10,yPosLogo + logoBoxSize); */
+
+  
 
   initQSort(data.boxes);
   shrinkButton = createButton('Shrink Main Image');
@@ -509,6 +569,9 @@ imgPos = []
 imgPlaced = []
 
 var m = 0;
+var a = 0;
+var b = 0;
+
 
 function placeImage(){
 
@@ -518,12 +581,24 @@ function placeImage(){
   for (let i = 0; i < Qboxes.length; i++) {
     if (Qboxes[i].rollover){
       //there should only be one
-      append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,picOrder[m]))
-      
+      if(data.presort && data.exparm == 2){
+         append(qImgArr, new QImg(psset[a][b],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,pssetOrder[a][b]));
+         table.addRow().setNum('Photo ' + pssetOrder[a][b],Qboxes[i].pos);
+         if(b == psset[a].length - 1){
+           a+=1
+         }else{
+           b+=1
+         }
+
+      }else{
+      append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,picOrder[m]));
+      table.addRow().setNum('Photo ' + picOrder[m],Qboxes[i].pos);
+      m+=1
+      }
 
       Qboxes[i].filled = true;
       // newRow('Photo ' + picOrder[m].toString(),Qboxes[i].pos);
-      m+=1;
+      
       bx  = 100
       by  = 50;
       imgScale = 320;
@@ -597,7 +672,7 @@ if(selectedCount === 2){
 
 } 
 
-let newRow = table.addRow();
+
 
 function saveCSV(){
 
@@ -607,7 +682,7 @@ function saveCSV(){
   } */
 
 
-  saveTable(table, 'data.csv')
+  saveTable(table, '../data/data.csv')
 
   
 
@@ -731,7 +806,15 @@ function draw() {
 
   rectMode(RADIUS);
   fill(125);
+  
+  if(data.presort && data.exparm == 2){
+    image(psset[a][b],bx,by,imgScale,imgScale);
+
+  }else{
+
   image(imgSet[m], bx, by, imgScale, imgScale);
+  }
+
 
   image(arrRightImg, 
   100 * rowPositions[rowIndex][rowPositions[rowIndex].length - 1] -
@@ -766,8 +849,8 @@ function draw() {
         
   
 text(selectedCount,1200,150);
-text(swapArray[0],1200,250);
-text(swapArray[1],1200,300);
+//text(swapArray[0],1200,250);
+//text(swapArray[1],1200,300);
 
 if(imageSwapped){
   text("Images Being Swapped",1200,350);
