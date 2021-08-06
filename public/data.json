@@ -5,7 +5,7 @@
   "left": "Most Disagreement",
   "boxes": "25",
   "presort": true,
-  "exparm": 2,
+  "exparm": 1,
   "presortFolder": "exparm1",
   "qsortFolder": "assets"
 }
