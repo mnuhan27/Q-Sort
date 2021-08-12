@@ -28,8 +28,11 @@ function draw() {
 function start(){
 
   if(data.presort){
-
-    window.location.replace("../presort")
+    if(data.exparm == 1){
+    window.location.replace("../presort1")
+    }else{
+      window.location.replace("../presort2")
+    }
   }else{
     window.location.replace("../qsort")
 

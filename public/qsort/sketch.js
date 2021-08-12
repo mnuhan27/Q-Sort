@@ -593,7 +593,7 @@ function placeImage(){
       }else{
       append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,picOrder[m]));
       table.addRow().setNum('Photo ' + picOrder[m],Qboxes[i].pos);
-      m+=1
+      m < 25 ? m+=1 : null;
       }
 
       Qboxes[i].filled = true;
@@ -811,8 +811,8 @@ function draw() {
     image(psset[a][b],bx,by,imgScale,imgScale);
 
   }else{
-
-  image(imgSet[m], bx, by, imgScale, imgScale);
+  
+  m < 25 ? image(imgSet[m], bx, by, imgScale, imgScale) : null;
   }
 
 
