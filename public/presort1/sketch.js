@@ -32,7 +32,7 @@ class QBox {
     if(this.pos == 1){
       textSize(30);
       fill(0);
-      text("Disgree",this.x - 50,this.y);
+      text("Disagree",this.x - 50,this.y);
 
     }else if (this.pos == 2){
       textSize(30);
@@ -41,7 +41,7 @@ class QBox {
     }else{
       textSize(30);
       fill(0);
-      text("Most Agree",this.x -50,this.y);
+      text("Agree",this.x -50,this.y);
 
     }
   }
