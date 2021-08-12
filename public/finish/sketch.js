@@ -8,10 +8,7 @@ function preload(){
 function setup() {
   noCanvas();
   createP(data.finish)
-  startButton = createButton('Start the Sort');
-  startButton.size(200);
-  startButton.position(width/2,200);
-  startButton.mousePressed(start);
+  
   
 }
 

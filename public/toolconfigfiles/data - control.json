@@ -1,0 +1,11 @@
+{
+  "start": "Welcome! Thank you for agreeing to participate in our study!     In the following screens, you will be asked to completed a photo sorting activity. You will be evaluating photographs of people, making a judgement about who looks like an avid reader.     You will make these judgements using your computer’s cursor. You will drag and drop photos in the appropriate square to mark your decision of who looks more or less like an avid reader. We ask you make these judgements fairly quickly, so please record the first thing that comes to mind.     If you have any questions, please ask the interview. You are welcome to talk about your decision out loud     When you are ready to begin, click [START]",
+  "finish": "This concludes the photo sorting portion of the study. The interviewer will now ask you a few debriefing questions. You may now stop screen sharing",
+  "right": "Most Agreement",
+  "left": "Most Disagreement",
+  "boxes": "25",
+  "presort": false,
+  "exparm": 1,
+  "presortFolder": "exparm1",
+  "qsortFolder": "assets"
+}

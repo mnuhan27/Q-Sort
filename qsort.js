@@ -2,7 +2,7 @@ var express = require("express");
 var socket = require("socket.io");
 
 var app = express();
-var server = app.listen(8000);
+var server = app.listen(8000,'0.0.0.0');
 
 app.use(express.static("public"));
 

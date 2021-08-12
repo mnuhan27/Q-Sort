@@ -112,6 +112,7 @@ class QImg{
           swapArray.push(this.picNum);
           
         }else {
+          //swapping imaging
           selectedCount-=1;
           for (let i = 0; i < swapArray.length; i++) {
             if(swapArray[i] === this.picNum){
@@ -135,10 +136,13 @@ class QImg{
                 qImgArr[i].imgX = this.imgX;
                 qImgArr[i].imgY = this.imgY;
                 qImgArr[i].pos = this.pos;
+                //table.addRow().setNum('Photo ' + picOrder[m],Qboxes[i].pos);
+                table.addRow().setNum('Photo ' + qImgArr[i].picNum,this.pos);
 
                 this.imgX = hold.imgX;
                 this.imgY = hold.imgY;
                 this.pos = hold.pos;
+                table.addRow().setNum('Photo ' + this.picNum,hold.pos);
                 
                 //these are all working
                 qImgArr[i].selected = false;
@@ -231,9 +235,9 @@ function shuffleNum(arra1) {
 }
 
 var numPicsArray = [];
-var numPics = 36;
+//var numPics = 36;
 
-for (let i = 1; i <= numPics; i++) {
+for (let i = 1; i <= 25; i++) {
     numPicsArray.push(i);
 
 }
@@ -242,6 +246,8 @@ picOrder = shuffleNum(numPicsArray);
 console.log(picOrder);
 
 imgSet = []
+psset = [];
+pssetOrder = [[],[],[]];
 
 imgLoadedArr = []
 
@@ -251,6 +257,63 @@ function imgLoaded(){
 
 
 var table;
+
+var presortMarker = ["Agree","Disagree","Unsure"]
+var psMarkerPosition = 0;
+
+var presortData;
+
+function processData(presortObject){
+presortData = presortObject;
+
+for (let i = 0; i < 25; i++) {
+  imgName = i + 1;
+  imgItem = loadImage("../assets/" + imgName.toString() + ".jpg" );
+  //console.log("../assets/" + presortData.most[i].toString() + ".jpg" );
+  psset.push(imgItem);
+  //pssetOrder[0].push(presortData.most[i]);
+  
+  
+}
+
+/* for (let i = 0; i < presortData.least.length; i++) {
+  //imgItem = loadImage("../assets/" + presortData.least[i].toString() + ".jpg" );
+  //psset[1].push(imgItem);
+  pssetOrder[1].push(presortData.least[i])
+}
+
+for (let i = 0; i < presortData.middle.length; i++) {
+  //imgItem = loadImage("../assets/" + presortData.middle[i].toString() + ".jpg" );
+  //psset[2].push(imgItem);
+  pssetOrder[2].push(presortData.middle[i])
+} */
+
+//console.log(psset);
+
+}
+
+function dataLoaded(dataObject){
+  data = dataObject;
+  if(data.presort & data.exparm == 2){
+  loadJSON('../presortData.json',processData);
+  console.log(data.exparm);
+
+
+  }else{
+
+    console.log("Control or EXP ARM 1")
+
+    img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
+
+    for (let i = 0; i < picOrder.length; i++) {
+     imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
+     imgSet.push(imgItem);
+  }
+
+}
+}
+
+
 
 function preload() {
 
@@ -262,28 +325,37 @@ dataRLabel = data.rightLabel;
 dataLLabel = data.leftLabel;*/
 
 
-img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
+
+  //console.log(imgLoadedArr)
+
+  data = loadJSON('../data.json',dataLoaded);
+
+  dataRLabel = data.right;
+  dataLLabel = data.left;
+  
+
+
+
+  
+
+/* img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
 
  for (let i = 0; i < picOrder.length; i++) {
   imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
   imgSet.push(imgItem);
 } 
-  //console.log(imgLoadedArr)
-
-  data = loadJSON('../data.json');
-  dataRLabel = data.right;
-  dataLLabel = data.left;
-
+ */
 arrRightImg = loadImage("../arrows/arrowright.png");
 arrLeftImg = loadImage("../arrows/arrowleft.png");
 
 //data = loadJSON('./studies/data.json');
 
-table = new p5.Table();
+//this is running
+table = loadTable('../data/data.csv', 'csv', 'header');
 
- for (let i = 1; i <= dataBoxes; i++) {
-    table.addColumn('Photo ' + [i].toString());
-}
+let newRow = table.addRow();
+
+
 
 }
 
@@ -346,7 +418,7 @@ function initQSort(totalBoxes) {
         remIndex = i;
       } else if (rowTot[i] >= remBoxes && remBoxes % 2 == 0) {
         remIndex = i - 1;
-        console.log(remIndex);
+        //console.log(remIndex);
         remEven = true;
 
         break;
@@ -428,7 +500,7 @@ function initQSort(totalBoxes) {
   }
 }
 
-console.log(Qboxes);
+//console.log(Qboxes);
 
 //intial image positions
 let imageX = 100;
@@ -440,6 +512,28 @@ var yPosLogo = 150;
 var logoBoxSize = 50;
 
 function setup() {
+   /* for (let i = 0; i <= data.boxes; i++) {
+    table.addColumn('Photo ' + i); */
+
+    //data.exparm == 2 ? img = psset[psset[a][b]] : img = imgSet[0];
+
+if(data.exparm == 2){
+    for (let i = 0; i < presortData.most.length; i++) {
+      pssetOrder[0].push(presortData.most[i]);
+    }
+
+    for (let i = 0; i < presortData.least.length; i++) {
+      pssetOrder[1].push(presortData.least[i]);
+    }
+
+    for (let i = 0; i < presortData.middle.length; i++) {
+      pssetOrder[2].push(presortData.middle[i]);
+    }
+
+    console.log(pssetOrder);
+  }
+
+
   createCanvas(windowWidth, windowHeight);
   bx = 100;
   by = 50;
@@ -450,6 +544,8 @@ function setup() {
   rect(xPosLogo + logoBoxSize,yPosLogo - logoBoxSize,logoBoxSize,logoBoxSize);
   textSize(2.5*logoBoxSize);
   text("Q",xPosLogo - 10,yPosLogo + logoBoxSize); */
+
+  
 
   initQSort(data.boxes);
   shrinkButton = createButton('Shrink Main Image');
@@ -504,6 +600,9 @@ imgPos = []
 imgPlaced = []
 
 var m = 0;
+var a = 0;
+var b = 0;
+
 
 function placeImage(){
 
@@ -513,12 +612,20 @@ function placeImage(){
   for (let i = 0; i < Qboxes.length; i++) {
     if (Qboxes[i].rollover){
       //there should only be one
-      append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,picOrder[m]))
-      
+      if(data.presort && data.exparm == 2){
+         append(qImgArr, new QImg(psset[pssetOrder[a][b]],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,pssetOrder[a][b]));
+         table.addRow().setNum('Photo ' + pssetOrder[a][b],Qboxes[i].pos);
+       b+=1;
+
+      }else{
+      append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,picOrder[m]));
+      table.addRow().setNum('Photo ' + picOrder[m],Qboxes[i].pos);
+      m < 25 ? m+=1 : null;
+      }
 
       Qboxes[i].filled = true;
       // newRow('Photo ' + picOrder[m].toString(),Qboxes[i].pos);
-      m+=1;
+      
       bx  = 100
       by  = 50;
       imgScale = 320;
@@ -592,7 +699,7 @@ if(selectedCount === 2){
 
 } 
 
-let newRow = table.addRow();
+
 
 function saveCSV(){
 
@@ -602,7 +709,7 @@ function saveCSV(){
   } */
 
 
-  saveTable(table, 'data.csv')
+  saveTable(table, '../data/data.csv')
 
   
 
@@ -669,6 +776,13 @@ function mouseReleased() {
 
 function draw() {
 
+  if(data.presort && data.exparm == 2){
+
+    fill(0);
+    text(presortMarker[psMarkerPosition],450,400);
+  
+  }
+
   
 
   /* shrinkButton.mousePressed(shrinkImage);
@@ -726,7 +840,15 @@ function draw() {
 
   rectMode(RADIUS);
   fill(125);
-  image(imgSet[m], bx, by, imgScale, imgScale);
+  
+  if(data.presort && data.exparm == 2){
+    image(psset[pssetOrder[a][b]],bx,by,imgScale,imgScale);
+
+  }else{
+  
+  m < 25 ? image(imgSet[m], bx, by, imgScale, imgScale) : null;
+  }
+
 
   image(arrRightImg, 
   100 * rowPositions[rowIndex][rowPositions[rowIndex].length - 1] -
@@ -761,8 +883,8 @@ function draw() {
         
   
 text(selectedCount,1200,150);
-text(swapArray[0],1200,250);
-text(swapArray[1],1200,300);
+//text(swapArray[0],1200,250);
+//text(swapArray[1],1200,300);
 
 if(imageSwapped){
   text("Images Being Swapped",1200,350);

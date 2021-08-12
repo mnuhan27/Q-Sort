@@ -10,7 +10,7 @@ function setup() {
   createP(data.start)
   startButton = createButton('Start the Sort');
   startButton.size(200);
-  startButton.position(width/2,200);
+  startButton.position(width/2,800);
   startButton.mousePressed(start);
   
 }
@@ -26,6 +26,17 @@ function draw() {
 
 
 function start(){
-  window.open("localhost:8000/qsort")
+
+  if(data.presort){
+    if(data.exparm == 1){
+    window.location.replace("../presort1")
+    }else{
+      window.location.replace("../presort2")
+    }
+  }else{
+    window.location.replace("../qsort")
+
+  }
+  
   
 }

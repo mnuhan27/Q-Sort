@@ -13,6 +13,21 @@ function setup() {
     boxes.option(36);
     boxes.option(49);
     boxes.option(64);
+
+    presortoption = createSelect();
+    presortoption.option("Enable Pre-Sort");
+    presortoption.option("Disable Pre-Sort");
+
+    if(presortoption.value() == "Enable Pre-Sort"){
+    exparm = createSelect();
+    exparm.option("Experimental Arm 1");
+    exparm.option("Experimental Arm 2");
+    }
+
+    
+    presortFolder = createInput("Enter the Pre-Sort Folder Name");
+    qsortFolder = createInput("Enter the Q-Sort Folder Name");
+
     //boxes.selected(64);
     //boxes.changed(mySelectEvent);
     createDiv();
@@ -31,6 +46,22 @@ function saveData(){
     data.right = right.value();
     data.left = left.value();
     data.boxes = boxes.value();
+    if(presortoption.value() == "Enable Pre-Sort"){
+      data.presort = true;
+    }else{
+
+      data.presort = false;
+    }
+
+    if(exparm.value() == "Experimental Arm 1"){
+      data.exparm = 1;
+    }else{
+      data.exparm = 2;
+
+    }
+
+    data.presortFolder = presortFolder.value();
+    data.qsortFolder = qsortFolder.value();
 	
 	saveJSON(data, 'data.json');
 }
