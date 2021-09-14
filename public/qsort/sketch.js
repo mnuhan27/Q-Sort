@@ -1,6 +1,6 @@
 //data = require('./data.json');
 
-dataBoxes = 49;
+//dataBoxes = 49;
 //dataRLabel = "Most Happy";
 //dataLLabel = "Least Happy";
 
@@ -243,11 +243,13 @@ for (let i = 1; i <= 25; i++) {
 }
 //picOrder is an array with the random order of pictures
 picOrder = shuffleNum(numPicsArray);
-console.log(picOrder);
+//console.log(picOrder);
 
 imgSet = []
-psset = [[],[],[]]
-pssetOrder = [[],[],[]];
+psset = []
+pssetOrder = [];
+var presort;
+//var data;
 
 imgLoadedArr = []
 
@@ -259,7 +261,79 @@ function imgLoaded(){
 var table;
 
 var presortMarker = ["Most Agree","Disagree","Unsure"]
-var psMarkerPosition = 2;
+var psMarkerPosition = 0;
+
+function loadImg(){
+
+   for (let i = 0; i < picOrder.length; i++) {
+  imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
+  imgSet.push(imgItem);
+}
+
+
+}
+
+function loadPreSortImg(){
+
+  for (let i = 0; i < pssetOrder.length; i++) {
+  imgItem = loadImage("../assets/" + pssetOrder[i].toString() + ".jpg" );
+  imgSet.push(imgItem);
+}
+
+
+}
+
+var firstMarker, secondMarker;
+
+
+function processPreSort(){
+
+     for (let i = 0; i < presortData.most.length; i++) {
+      //imgItem = loadImage("../assets/" + presortData.most[i].toString() + ".jpg" );
+      //console.log("../assets/" + presortData.most[i].toString() + ".jpg" );
+      //imgSet.push(imgItem);
+      pssetOrder.push(presortData.most[i]);
+      
+      
+    }
+
+    for (let i = 0; i < presortData.least.length; i++) {
+      //imgItem = loadImage("../assets/" + presortData.least[i].toString() + ".jpg" );
+      //imgSet.push(imgItem);
+      pssetOrder.push(presortData.least[i]);
+    }
+
+    for (let i = 0; i < presortData.middle.length; i++) {
+      //imgItem = loadImage("../assets/" + presortData.middle[i].toString() + ".jpg" );
+      //imgSet.push(imgItem);
+      pssetOrder.push(presortData.middle[i]);
+    }
+
+    firstMarker = presortData.least[0];
+    secondMarker = presortData.middle[0];
+
+    loadPreSortImg()
+
+
+}
+
+var presortLabels = false;
+
+function checkPreSort(){
+
+    if(data.presort && data.exparm == 2){
+      presortData = loadJSON('../presortData.json', processPreSort);
+      presortLabels = true;
+
+    }else{
+
+      loadImg();
+
+    }
+
+}
+
+
 
 function preload() {
 
@@ -274,10 +348,10 @@ dataLLabel = data.leftLabel;*/
 
   //console.log(imgLoadedArr)
 
-  data = loadJSON('../data.json');
+  data = loadJSON('../data.json',checkPreSort);
   dataRLabel = data.right;
   dataLLabel = data.left;
-  presortData = loadJSON('../presortData.json');
+  //presortData = loadJSON('../presortData.json');
 
   if(data.presort == true){
 
@@ -287,24 +361,7 @@ dataLLabel = data.leftLabel;*/
 
     //img = loadImage("../assets/" + presortData.most[0].toString()+ ".jpg");
 
-    for (let i = 0; i < presortData.most.length; i++) {
-      imgItem = loadImage("../assets/" + presortData.most[i].toString() + ".jpg" );
-      console.log("../assets/" + presortData.most[i].toString() + ".jpg" );
-      psset[0].push(imgItem);
-      pssetOrder[0].push(presortData.most[i]);
-      
-      
-    }
-
-    for (let i = 0; i < presort.least.length; i++) {
-      imgItem = loadImage("../assets/" + presortData.least[i].toString() + ".jpg" );
-      psset[1].push(imgItem);
-    }
-
-    for (let i = 0; i < presort.middle.length; i++) {
-      imgItem = loadImage("../assets/" + presortData.middle[i].toString() + ".jpg" );
-      psset[2].push(imgItem);
-    }
+ 
    
 
 
@@ -315,12 +372,9 @@ dataLLabel = data.leftLabel;*/
 
   }else{
 
-  img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
+  //img = loadImage("../assets/" + picOrder[0].toString() + ".jpg");
 
- for (let i = 0; i < picOrder.length; i++) {
-  imgItem = loadImage("../assets/" + picOrder[i].toString() + ".jpg" );
-  imgSet.push(imgItem);
-} 
+ 
 
   }
 
@@ -582,13 +636,15 @@ function placeImage(){
     if (Qboxes[i].rollover){
       //there should only be one
       if(data.presort && data.exparm == 2){
-         append(qImgArr, new QImg(psset[a][b],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,pssetOrder[a][b]));
-         table.addRow().setNum('Photo ' + pssetOrder[a][b],Qboxes[i].pos);
-         if(b == psset[a].length - 1){
-           a+=1
-         }else{
-           b+=1
+         append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,pssetOrder[m]));
+         table.addRow().setNum('Photo ' + pssetOrder[m],Qboxes[i].pos);
+         
+         m < 25 ? m+=1 : null;
+        if(pssetOrder[m] == firstMarker || pssetOrder[m] == secondMarker){
+           psMarkerPosition+=1;
          }
+         
+        
 
       }else{
       append(qImgArr, new QImg(imgSet[m],Qboxes[i].x -40,Qboxes[i].y - 40,Qboxes[i].pos,picOrder[m]));
@@ -682,7 +738,7 @@ function saveCSV(){
   } */
 
 
-  saveTable(table, '../data/data.csv')
+  saveTable(table, 'data.csv')
 
   
 
@@ -755,6 +811,7 @@ function draw() {
   enlargeButton.mousePressed(enlargeImage); */
  /*  for (let i = 0; i < Qboxes.length; i++) {
     console.log(Qboxes[i].mouseIsOver);
+
   } */
   background(255);
 
@@ -807,13 +864,9 @@ function draw() {
   rectMode(RADIUS);
   fill(125);
   
-  if(data.presort && data.exparm == 2){
-    image(psset[a][b],bx,by,imgScale,imgScale);
-
-  }else{
+ 
   
   m < 25 ? image(imgSet[m], bx, by, imgScale, imgScale) : null;
-  }
 
 
   image(arrRightImg, 
@@ -846,6 +899,12 @@ function draw() {
         windowWidth -
         200,
         220 + rowIndex * 100);
+
+  if(presortLabels){
+  fill(0);
+  text(presortMarker[psMarkerPosition],200,400);
+  }
+    
         
   
 text(selectedCount,1200,150);
